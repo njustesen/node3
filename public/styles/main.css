@@ -1,5 +1,5 @@
 body {
-	background-color: #eaf1f1
+	background-color: #eeeef7;
 }
 
 a {
@@ -13,17 +13,19 @@ a:hover {
 }
 
 .navbar-default .navbar-nav>li>a:hover{
-	color: #61cdff;
+	color: #fff;
+	background-color: #3c4e67;
 	text-decoration: none;
 }
 
 .content {
-	background-color: white;
+	background-color: #fbfbfb;
 	padding: 10% 8% 8% 8%;
 }
 
 .footer {
-	padding: 12% 12% 6% 12%;
-	border-bottom: 1px solid rgba(0,0,0,0.05);
+	padding: 10% 8% 8% 8%;
+	border-top: 1px solid rgba(0,0,0,0.05);
 	width: 100%;
+	text-align: center;
 }

@@ -19,7 +19,7 @@
 
     <!-- Add your site or application content here -->
 
-    <div class="navbar navbar-default navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top" ng-controller="locationController">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
           <span class="icon-bar"></span>
@@ -30,9 +30,9 @@
       </div>
       <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Games</a></li>
-          <li><a href="#">Rankings</a></li>
-          <li><a href="#">About</a></li>
+          <li ng-class="{ active: isActive('/game/')}"><a href="#/game">Games</a></li>
+          <li ng-class="{ active: isActive('/ranking/')}"><a href="#/ranking">Rankings</a></li>
+          <li ng-class="{ active: isActive('/about/')}"><a href="#/about">About</a></li>
         </ul>
       </div>
     </div>
@@ -44,8 +44,14 @@
       
     </div>
     <div class="footer">
-        <p><span class="glyphicon glyphicon-heart"></span> footer</p>
-      </div>
+        <p>
+        <span class="glyphicon glyphicon-heart"></span>
+        <span class="glyphicon glyphicon-heart"></span>
+        <span class="glyphicon glyphicon-heart"></span>
+        <span class="glyphicon glyphicon-heart"></span>
+        <span class="glyphicon glyphicon-heart"></span>
+        </p>
+    </div>
 
     <!-- Dependencies -->
     <script type="text/javascript" src="scripts/jquery/jquery.min.js"></script>
@@ -56,8 +62,7 @@
     
     <!-- App -->
     <script type="text/javascript" src="scripts/app.js"></script>
-    <script type="text/javascript" src="scripts/controllers/main.js"></script>
-    <script type="text/javascript" src="scripts/controllers/about.js"></script>
+    <script type="text/javascript" src="scripts/controllers.js"></script>
 
 </body>
 </html>

@@ -2,22 +2,25 @@
 
 var node3app = angular.module('node3app', [
 	'ngRoute',
-	'mainControllers',
-	'aboutControllers'
+	'ngapp',
 ]);
 
 node3app.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
-      when('/', {
-        templateUrl: 'view/main.html',
-        controller: 'mainController'
+      when('/game/', {
+        templateUrl: 'view/game.html',
+        controller: 'gameController'
       }).
       when('/about/', {
         templateUrl: 'view/about.html',
         controller: 'aboutController'
       }).
+      when('/ranking/', {
+        templateUrl: 'view/ranking.html',
+        controller: 'rankingController'
+      }).
       otherwise({
-        redirectTo: '/'
+        redirectTo: '/game'
       });
   }]);

@@ -15,7 +15,6 @@ app.post('/ping', function(req, res) {
 });
 
 app.get('*', function(req, res) {
-	console.log(req.url);
 	res.sendFile(__dirname + '/public/'); // Derect to angular
 });
 
