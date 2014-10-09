@@ -1,0 +1,29 @@
+body {
+	background-color: #eaf1f1
+}
+
+a {
+	color: #318dff;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #61cdff;
+	text-decoration: none;
+}
+
+.navbar-default .navbar-nav>li>a:hover{
+	color: #61cdff;
+	text-decoration: none;
+}
+
+.content {
+	background-color: white;
+	padding: 10% 8% 8% 8%;
+}
+
+.footer {
+	padding: 12% 12% 6% 12%;
+	border-bottom: 1px solid rgba(0,0,0,0.05);
+	width: 100%;
+}
