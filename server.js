@@ -18,4 +18,6 @@ app.get('*', function(req, res) {
 	res.sendFile(__dirname + '/public/'); // Derect to angular
 });
 
-console.log('Server listening to port ' + port);
+app.listen(app.get('port'), function() {
+  console.log('Server listening to port ' + port);
+})
