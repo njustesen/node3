@@ -29,6 +29,3 @@ function header(res){
 	});
 	return res;
 }
-
-internet mobildata
-	navn, apm, proxy.. caps-sens
