@@ -19,13 +19,3 @@ app.get('*', function(req, res) {
 });
 
 console.log('Server listening to port ' + port);
-
-function header(res){
-	res.writeHead(200, {
-		'Content-Type': mimeType,
-		'Content-Length': contents.length,
-		'Accept-Ranges': 'bytes',
-		'Cache-Control': 'no-cache'
-	});
-	return res;
-}
