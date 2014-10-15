@@ -1,8 +1,8 @@
 
-
 var node3app = angular.module('node3app', [
 	'ngRoute',
 	'ngapp',
+  'gameFactory'
 ]);
 
 node3app.config(['$routeProvider',
