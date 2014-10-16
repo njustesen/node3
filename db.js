@@ -9,11 +9,16 @@ mongoose.connect(uristring, function (err, res) {
   if (err) { 
     console.log ('ERROR connecting to: ' + uristring + '. ' + err);
   } else {
-    console.log ('Succeeded connected to: ' + uristring);
+    console.log ('Successfully connected to: ' + uristring);
 
     var userSchema = new mongoose.Schema({
 		username: { type: String, index: true },
 	    password: { type: String }
+	});
+
+	var sessionSchema = new mongoose.Schema({
+		username: { type: String, index: true },
+	    key: { type: String }
 	});
 
 	var gameSchema = new mongoose.Schema({
@@ -30,7 +35,7 @@ mongoose.connect(uristring, function (err, res) {
 	// Add to the MongoDB database
 	exports.User = mongoose.model('Users', userSchema);
 	exports.Game = mongoose.model('Games', gameSchema);
-    
+	exports.Session = mongoose.model('Sessions', sessionSchema);
   }
 });
 

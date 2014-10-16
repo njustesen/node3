@@ -12,7 +12,7 @@
     
     <link rel="stylesheet" href="styles/main.css">
   </head>
-  <body ng-app="node3app">
+  <body ng-app="node3app" ng-controller="sessionController">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -29,21 +29,50 @@
         <a class="navbar-brand" href="#">Node3s</a>
       </div>
       <div class="navbar-collapse collapse navbar-responsive-collapse">
-        <ul class="nav navbar-nav">
+        <ul class="nav navbar-nav" ng-if="isAuthenticated()">
           <li ng-class="{ active: isActive('/game/')}"><a href="#/game">Games</a></li>
           <li ng-class="{ active: isActive('/ranking/')}"><a href="#/ranking">Rankings</a></li>
           <li ng-class="{ active: isActive('/about/')}"><a href="#/about">About</a></li>
         </ul>
+        <ul class="nav navbar-nav navbar-right" ng-if="isAuthenticated()">
+          <li><a href="#">{{ getSession().username }}</a></li>
+          <li><a href="#" ng-click="deleteSession()">Log off</a></li>
+          <li class="navbar-nothing"></li>
+        </ul>
       </div>
     </div>
 
-    <div class="content">
+    <div id="alerts"></div>
 
-      <div ng-view=""></div>
+    <div class="content" ng-if="isAuthenticated()">
 
-      
+      <div ng-view="" class="view-content"></div>
+
     </div>
-    <div class="footer">
+
+    <div class="login-page" ng-if="!isAuthenticated()">
+      <div class="login-box">
+        <form novalidate class="form-horizontal">
+          <fieldset>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" ng-model="user.username" class="form-control" placeholder="">
+              <br />
+              <label>Password</label>
+              <input type="password" ng-model="user.password" class="form-control" placeholder="">
+            </div>
+            
+            <button class="btn btn-primary" ng-click="createSession(user)">Sign in</button>
+            or
+            <button class="btn btn-default" ng-click="createUser(user)">Sign up</button>
+
+           </fieldset>
+        </form>
+      </div>
+    </div>
+
+    </div>
+    <div class="footer" ng-if="isAuthenticated() && !isAuthenticated()">
         <p>
         <span class="glyphicon glyphicon-heart"></span>
         <span class="glyphicon glyphicon-heart"></span>
@@ -60,6 +89,7 @@
     <script type="text/javascript" src="scripts/angular/angular.min.js"></script>
     <script type="text/javascript" src="scripts/angular/angular-resource.min.js"></script>
     <script type="text/javascript" src="scripts/angular/angular-route.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-cookies.min.js"></script>
     
     <!-- App -->
     <script type="text/javascript" src="scripts/app.js"></script>

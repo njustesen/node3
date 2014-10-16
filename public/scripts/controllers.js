@@ -62,3 +62,26 @@ ngapp.controller('locationController',
     }
 ]);
 
+ngapp.controller('sessionController', 
+[
+  '$scope', 'sessionFactory', 'userFactory', 
+    function ($scope, sessionFactory, userFactory) { 
+      $scope.isAuthenticated = function () { 
+        return sessionFactory.getSession() != "undefined" && sessionFactory.getSession() != undefined;
+      };
+      $scope.getSession = function () { 
+        return sessionFactory.getSession();
+      };
+      $scope.createSession = function (username, password) { 
+        return sessionFactory.createSession(username, password);
+      };
+      $scope.deleteSession = function () { 
+        return sessionFactory.deleteSession();
+      };
+      $scope.createUser = function (user) { 
+        return userFactory.createUser(user);
+      };
+    }
+]);
+
+

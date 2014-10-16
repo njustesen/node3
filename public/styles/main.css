@@ -1,6 +1,5 @@
 body {
 	background-color: #eeeef7;
-
 }
 
 a {
@@ -19,10 +18,53 @@ a:hover {
 	text-decoration: none;
 }
 
+.navbar-nothing{
+	width: 20px;
+	height: 20px;
+}
+
 .content {
 	/*background-color: #fbfbfb;*/
+	background-image: url('/images/art-robot-Sci-Fi-OscarSaldarriaga-796089.jpeg');
+	background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center; 
+    background-size:   cover; 
+	/*background-color: #fff;*/
+	padding-top: 150px;
+	height: 100%;
+}
+
+.view-content{
+	width:90%;
+	max-width: 700px;
+	margin: 0 auto;
+	margin-bottom: 120px;
+}
+
+.well {
 	background-color: #fff;
-	padding: 8% 8% 4% 8%;
+}
+
+.login-page {
+	/*background-image: url('/images/fallen_throne.jpg');*/
+	background-image: url('/images/Arbor_Wilds_concept_art.jpg');
+	background-image: url('/images/art-robot-Sci-Fi-OscarSaldarriaga-796089.jpeg');
+	background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center; 
+    background-size:   cover; 
+	height: 100vh;
+	width: 100%;
+	padding-top: 160px; 
+}
+
+.login-box {
+	width: 100%;
+	max-width: 260px;
+	margin-top: 140px;
+	margin: 0 auto;
+	color: #111;
 }
 
 .footer {
@@ -30,4 +72,17 @@ a:hover {
 	border-top: 1px solid rgba(0,0,0,0.05);
 	width: 100%;
 	text-align: center;
+}
+
+#alerts {
+	width:100%;
+	position: absolute;
+	top: 76px;
+}
+
+.alert{
+	width: 80%;
+	max-width: 400px;
+	margin-right: auto;
+	margin-left:auto;
 }

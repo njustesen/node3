@@ -1,6 +1,36 @@
 <div>
-	<div>
-		<h3>Active games</h3>
+
+	<div class="form-group">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Username">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" type="button">Challenge player</button>
+      </span>
+    </div>
+  </div>
+
+	<div class="well bs-component">
+		<h3>Your turn <span class="badge">14</span></h3>
+		<table class="table table-striped table-hover no-footer dataTable">
+		  <thead>
+		  	<tr>
+		  		<th>Player 1</th>
+		  		<th>Player 2</th>
+		  		<th>Winner</th>
+		  		<th>turn</th>
+		  	</tr>
+		  </thead>
+		  <tbody>
+		  	<tr ng-repeat="game in games">
+		  		<td>{{ game.p1 }}</td>
+		  		<td>{{ game.p2 }}</td>
+		  		<td>{{ game.winner }}</td>
+		  		<td>{{ game.turn }}</td>
+		  	</tr>
+		  </tbody>
+		</table>
+
+		<h3>Opponent's turn <span class="badge">14</span></h3>
 		<table class="table table-striped table-hover no-footer dataTable">
 		  <thead>
 		  	<tr>
@@ -21,16 +51,9 @@
 		</table>
 	</div>
 	
-	<div class="form-group">
-    <div class="input-group">
-      <span class="input-group-addon"><b>Challenge player</b></span>
-      <input type="text" class="form-control">
-      <span class="input-group-btn">
-        <button class="btn btn-primary" type="button">Send</button>
-      </span>
-    </div>
-  </div>
+	
 
+  <!--
 	<div>
 
 		<div class="well bs-component">
@@ -52,5 +75,5 @@
 		</div>
 
 	</div>
-
+	-->
 </div>
