@@ -19,7 +19,7 @@
 
     <!-- Add your site or application content here -->
 
-    <div class="navbar navbar-default navbar-fixed-top" ng-controller="locationController">
+    <div ng-if="isAuthenticated()" class="navbar navbar-default navbar-fixed-top" ng-controller="locationController">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
           <span class="icon-bar"></span>

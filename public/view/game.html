@@ -31,7 +31,7 @@
         <li ng-show="(show==1)" class="active">
 	        <a href="">
 	        	Opponent's turn
-	        	<span class="badge">
+	        	<span class="badge" ng-show="false">
 	        		{{ (games | filter: isOpponentsTurn(getSessionUsername())).length }}
 	        	</span>
 	        </a>
@@ -39,7 +39,7 @@
         <li ng-show="(show!=1)">
 	        <a href="" ng-click="show=1">
 	        	Opponent's turn
-	        	<span class="badge">
+	        	<span class="badge" ng-show="false">
 	        		{{ (games | filter: isOpponentsTurn(getSessionUsername())).length }}
 	        	</span>
 	        </a>
@@ -47,7 +47,7 @@
         <li ng-show="(show==2)" class="active">
 	        <a href="">
 	        	Ended
-	        	<span class="badge">
+	        	<span class="badge" ng-show="false">
 	        		{{ (games | filter: isGameOver(game)).length }}
 	        	</span>
 	        </a>
@@ -55,7 +55,7 @@
         <li ng-show="(show!=2)">
         	<a href="" ng-click="show=2">
         		Ended
-        		<span class="badge">
+        		<span class="badge" ng-show="false">
 	        		{{ (games | filter: isGameOver(game)).length }}
 	        	</span>
         	</a>
