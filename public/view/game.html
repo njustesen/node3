@@ -115,12 +115,14 @@
 				  	<tr>
 				  		<th>Opponent</th>
 				  		<th>turn</th>
+				  		<th>Results</th>
 				  	</tr>
 				  </thead>
 				  <tbody>
 				  	<tr ng-repeat="game in games | filter: isGameOver(game)">
 				  		<td>{{ getOpponent(getSessionUsername(), game) }}</td>
 				  		<td>{{ game.gamestate.turn }}</td>
+				  		<td><span class="label label-success">Won</span></td>
 				  	</tr>
 				  </tbody>
 				</table>
