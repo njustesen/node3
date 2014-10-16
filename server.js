@@ -110,6 +110,9 @@ app.post('/user/create/', function(req, res) {
 	
 	var username = req.body.username;
 	var password = req.body.password;
+	var email = req.body.email;
+
+	console.log('trying to create user with email: ' + email);
 
 	// Check if user exists
 	db.User.find({username : username}, function(err, users) {
@@ -117,18 +120,26 @@ app.post('/user/create/', function(req, res) {
 			console.log("User with name: " + username + " was found.");
 			res.status(404).send(username + " already exists!");
 		} else {
-			// Creating one user.
-			var user = new db.User ({
-			  username: username,
-			  password: password
-			});
+			db.User.find({email : email}, function(err, users) {
+				if (users.length > 0){
+					console.log("User with email: " + email + " was found.");
+					res.status(404).send(email + " is already used!");
+				} else {
+					// Creating one user.
+					var user = new db.User ({
+					  username : username,
+					  password : password,
+					  email : email
+					});
 
-			// Saving it to the database.  
-			user.save(function (err) {
-				if (err) 
-					res.status(404).send("Error saving user");
-				else 
-					res.send( username + " was successfully created!" );
+					// Saving it to the database.  
+					user.save(function (err) {
+						if (err) 
+							res.status(404).send("Error saving user");
+						else 
+							res.send( username + " was successfully created!" );
+					});
+				}
 			});
 		}
 	});
@@ -146,11 +157,18 @@ app.post('/user/clear/', function(req, res) {
 	});
 });
 
-app.post('/game/user/:id', function(req, res) {
-	var id = req.param('id');
-	db.Game.find({p1 : id}, function(err, games){
-		res.json(games);
-	});
+app.post('/game/', function(req, res) {
+
+	var username = req.body.username;
+	console.log('looking for games with username ' + username);
+
+	db.Game.find(
+		{ 
+			$or:[ { p1 : username }, { p2 : username } ] 
+		}, 
+		function(err, games){
+			res.json(games);
+		});
 });
 
 app.post('/game/create/', function(req, res) {
@@ -158,29 +176,47 @@ app.post('/game/create/', function(req, res) {
 	var p1 = req.body.p1;
     var p2 = req.body.p2;
 
-	// TODO: Does players exist?
+    if (p1 == p2){
+		res.status(404).send('You cannot challenge yourself.');
+		return;
+    }
 
-	var game = new db.Game({
-		p1 : p1,
-		p2 : p2,
-		winner : "",
-		gamestate : {
-			turn : 0,
-			playerToMove : p1,
-			grid : [
-				[' ',' ',' '],
-				[' ',' ',' '],
-				[' ',' ',' ']
-			]
+    db.User.findOne({ username : p1 }, function(err, userP1) {
+		if (userP1 == null) {
+			console.log ('Error challenging user ' + p2);
+			res.status(404).send('User ' + p1 + ' does not exist.');
+		} else {
+			console.log('user found ' + userP1);
+			db.User.findOne({ username : p2 }, function(err2, userP2) {
+				if (userP2 == null) {
+					console.log ('Error challenging user ' + p2);
+					res.status(404).send('User ' + p2 + ' does not exist.');
+				} else {
+					console.log('user found ' + userP2);
+					var game = new db.Game({
+						p1 : p1,
+						p2 : p2,
+						winner : "",
+						gamestate : {
+							turn : 0,
+							playerToMove : p1,
+							grid : [
+								[' ',' ',' '],
+								[' ',' ',' '],
+								[' ',' ',' ']
+							]
+						}
+					});
+
+					game.save(function (err3) {
+						if (err) 
+							res.status(404).send("Error creating the game!");
+						else 
+							res.json('Game successfully created!');
+					});
+				}
+			});
 		}
-	});
-
-	// TODO: Respond with json
-	game.save(function (err) {
-		if (err) 
-			res.status(404).send("Error saving game");
-		else 
-			res.send("A game was successfully created with id " + game._id );
 	});
 
 });

@@ -35,7 +35,7 @@
           <li ng-class="{ active: isActive('/about/')}"><a href="#/about">About</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right" ng-if="isAuthenticated()">
-          <li><a href="#">{{ getSession().username }}</a></li>
+          <li><a href="#">{{ getSessionUsername() }}</a></li>
           <li><a href="#" ng-click="deleteSession()">Log off</a></li>
           <li class="navbar-nothing"></li>
         </ul>
@@ -51,20 +51,40 @@
     </div>
 
     <div class="login-page" ng-if="!isAuthenticated()">
-      <div class="login-box">
+      <div class="pills-login">
+        <ul class="nav nav-pills">
+          <li class="active" ng-show="!show"><a href="" ng-click="show=false">Sign in</a></li>
+          <li ng-show="show"><a href="" ng-click="show=false">Sign in</a></li>
+          <li class="active" ng-show="show"><a href="" ng-click="show=true">Register</a></li>
+          <li ng-show="!show"><a href="" ng-click="show=true">Register</a></li>
+        </ul>
+      </div>
+      <div id="login" class="login-box" ng-show="!show">
         <form novalidate class="form-horizontal">
           <fieldset>
             <div class="form-group">
-              <label>Username</label>
-              <input type="text" ng-model="user.username" class="form-control" placeholder="">
+              <input type="text" ng-model="user.username" class="form-control" placeholder="Username">
               <br />
-              <label>Password</label>
-              <input type="password" ng-model="user.password" class="form-control" placeholder="">
+              <input type="password" ng-model="user.password" class="form-control" placeholder="Password">
             </div>
             
-            <button class="btn btn-primary" ng-click="createSession(user)">Sign in</button>
-            or
-            <button class="btn btn-default" ng-click="createUser(user)">Sign up</button>
+            <button class="btn btn-primary btn-lg btn-block" ng-click="createSession(user)">Sign in</button>
+
+           </fieldset>
+        </form>
+      </div>
+      <div id="register" class="login-box" ng-show="show">
+        <form novalidate class="form-horizontal">
+          <fieldset>
+            <div class="form-group">
+              <input type="text" ng-model="user.email" class="form-control" placeholder="Email">
+              <br />
+              <input type="text" ng-model="user.username" class="form-control" placeholder="Username">
+              <br />
+              <input type="password" ng-model="user.password" class="form-control" placeholder="Password">
+            </div>
+            
+            <button class="btn btn-primary btn-lg btn-user" ng-click="createUser(user)">Sign up</button>
 
            </fieldset>
         </form>
@@ -90,10 +110,11 @@
     <script type="text/javascript" src="scripts/angular/angular-resource.min.js"></script>
     <script type="text/javascript" src="scripts/angular/angular-route.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-cookies.min.js"></script>
-    
+
     <!-- App -->
     <script type="text/javascript" src="scripts/app.js"></script>
     <script type="text/javascript" src="scripts/services.js"></script>
+    <script type="text/javascript" src="scripts/directives.js"></script>
     <script type="text/javascript" src="scripts/controllers.js"></script>
 
 </body>

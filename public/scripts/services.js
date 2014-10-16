@@ -1,13 +1,15 @@
 var myApp = angular.module('gameFactory', []);
 
 angular.module('gameFactory')
-    .factory('gameFactory', ['$http', function($http) {
+    .factory('gameFactory', ['$http', 'sessionFactory', function($http, sessionFactory) {
 
     var urlBase = '/game/';
     var gameFactory = {};
 
     gameFactory.getGames = function () {
-        return $http.get(urlBase);
+        var data = { username : sessionFactory.getSessionUsername };
+        console.log('looking for games with username ' + data.username);
+        return $http.get(urlBase, data);
     };
 
     gameFactory.getGame = function (id) {
@@ -17,6 +19,24 @@ angular.module('gameFactory')
     gameFactory.createGame = function (players) {
         return $http.post(urlBase + 'create/', players);
     };
+
+    gameFactory.getOpponent = function (user, game){
+        if (game.p1 == user){
+            return game.p2;
+        }
+        return game.p1;
+    }
+
+    gameFactory.isPlayersTurn = function (game) {
+        return gameFactory.isPlayersTurn(game);
+    }
+
+    gameFactory.isGameOver = function (game){
+        if (game.gamestate.winner == game.p1 || game.gamestate.winner == game.p2){
+            return true;
+        }
+        return false;
+    }
 
     return gameFactory;
 }]);
@@ -29,10 +49,12 @@ angular.module('sessionFactory')
     var urlBase = '/session/';
     var sessionFactory = {};
 
-    sessionFactory.getSession = function () {
-        console.log($cookies.session);
-        console.log($cookies.username);
+    sessionFactory.getSessionId = function () {
         return $cookies.session;
+    };
+
+    sessionFactory.getSessionUsername = function () {
+        return $cookies.username;
     };
 
     sessionFactory.createSession = function (username, password) {
@@ -116,7 +138,7 @@ angular.module('userFactory')
     };
 
     userFactory.createUser = function (user) {
-        console.log("create user called");
+        console.log("create user called " + user.email);
         $http.post(urlBase + 'create/', user)
             .success(function(data, status, headers, config) {
                 console.log("user created");
