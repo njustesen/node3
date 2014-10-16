@@ -44,6 +44,17 @@
 	}
 }
 
+@media (max-width: 900px) {
+	body {
+		background-image: url('/images/bg_1000.jpg');
+		background-repeat: no-repeat;
+	    background-attachment: fixed;
+	    background-position: top center; 
+	    /*background-size:   cover; */
+	    background-color: black;
+	}
+}
+
 @media (max-width: 500px) {
 	body {
 		background-image: url('/images/bg_800.jpg');
