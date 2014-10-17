@@ -128,11 +128,7 @@ a:hover {
 	max-width: 260px;
 	margin-top: 140px;
 	margin: 0 auto;
-	margin-bottom: 20px;
-}
-
-.btn-user {
-	width:100%;
+	margin-bottom: 10px;
 }
 
 .login-box {
@@ -161,4 +157,11 @@ a:hover {
 	max-width: 400px;
 	margin-right: auto;
 	margin-left:auto;
+}
+
+.error-text {
+	height: 16px;
+	color: red;
+	font-size: 13px;
+	font-weight: bold;
 }

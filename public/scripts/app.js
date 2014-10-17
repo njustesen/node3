@@ -6,7 +6,8 @@ var node3app = angular.module('node3app', [
   'sessionFactory',
   'alertFactory',
   'gameFactory',
-  'userFactory'
+  'userFactory',
+  'validFactory'
 ]);
 
 node3app.config(['$routeProvider',

@@ -63,28 +63,41 @@
         <form novalidate class="form-horizontal">
           <fieldset>
             <div class="form-group">
-              <input type="text" ng-model="user.username" class="form-control" placeholder="Username">
-              <br />
-              <input type="password" ng-model="user.password" class="form-control" placeholder="Password">
+              <div class="valid-error">
+                <div class="error-text"></div>
+                <input type="text" ng-model="login.username" maxlength="32" class="form-control" placeholder="Username" ng-change="validLogin(login.username, login.password, 'log-button')">
+              </div>
+              <div class="valid-error">
+                <div class="error-text"></div>
+                <input type="password" ng-model="login.password" maxlength="32" class="form-control" placeholder="Password" ng-change="validLogin(login.username, login.password, 'log-button')">
+              </div>
             </div>
             
-            <button class="btn btn-primary btn-lg btn-block" ng-click="createSession(user)">Sign in</button>
+            <button id='log-button' class="btn btn-primary btn-lg btn-block" disabled ng-click="createSession(login)">Sign in</button>
 
            </fieldset>
         </form>
       </div>
-      <div id="register" class="login-box" ng-show="show">
+      <div id="registration" class="login-box" ng-show="show">
         <form novalidate class="form-horizontal">
           <fieldset>
             <div class="form-group">
-              <input type="text" ng-model="user.email" class="form-control" placeholder="Email">
-              <br />
-              <input type="text" ng-model="user.username" class="form-control" placeholder="Username">
-              <br />
-              <input type="password" ng-model="user.password" class="form-control" placeholder="Password">
+              <div id="valid-email" class="valid-error">
+                <div class="error-text"> {{ emailError }}</div>
+                <input type="text" ng-model="user.email" maxlength="42" class="form-control" placeholder="Email" ng-change="validEmail(user.email, 'valid-email', 'registration', 'reg-button')">
+              </div>
+              <div id="valid-username" class="valid-error">
+                <div class="error-text"> {{ usernameError }}</div>
+                <input type="text" ng-model="user.username" maxlength="32" class="form-control" placeholder="Username" ng-change="validUsername(user.username, 'valid-username', 'registration', 'reg-button')">
+              </div>
+              <div id="valid-password" class="valid-error">
+                <div class="error-text"> {{ passwordError }}</div>
+                <input type="password" ng-model="user.password" maxlength="32" class="form-control" placeholder="Password" ng-change="validPassword(user.password, 'valid-password', 'registration', 'reg-button')">
+              </div>
+             
             </div>
             
-            <button class="btn btn-primary btn-lg btn-user" ng-click="createUser(user)">Sign up</button>
+            <button id='reg-button' class="btn btn-primary btn-lg btn-block" disabled ng-click="createUser(user)">Sign up</button>
 
            </fieldset>
         </form>

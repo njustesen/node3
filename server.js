@@ -46,7 +46,7 @@ app.post('/session/create/', function(req, res) {
 						console.log('db response');
 						if (err) {
 							console.log('Error saving session');
-							res.status(404).send('Error saving session');
+							res.status(404).send('Error signing in.');
 						} else {
 							console.log('Session saved');
 							res.json(newSession);
@@ -57,7 +57,7 @@ app.post('/session/create/', function(req, res) {
 		} else if (user){
 			res.status(404).send('Wrong password');
 		} else {
-			res.status(404).send('Username does not exist');
+			res.status(404).send('Username <u>' + username + '</u> does not exist');
 		}
 	});
 
@@ -101,7 +101,7 @@ app.post('/user/', function(req, res) {
 			console.log("User with name: " + username + " was found.");
 			res.json(user);
 		} else {
-			res.status(404).send('user not found');
+			res.status(404).send('User not found');
 		}
 	});
 });
@@ -118,7 +118,7 @@ app.post('/user/create/', function(req, res) {
 	db.User.find({username : username}, function(err, users) {
 		if (users.length > 0){
 			console.log("User with name: " + username + " was found.");
-			res.status(404).send(username + " already exists!");
+			res.status(404).send("<u>" + username + "</u> already exists!");
 		} else {
 			db.User.find({email : email}, function(err, users) {
 				if (users.length > 0){
@@ -135,7 +135,7 @@ app.post('/user/create/', function(req, res) {
 					// Saving it to the database.  
 					user.save(function (err) {
 						if (err) 
-							res.status(404).send("Error saving user");
+							res.status(404).send("Error saving user!");
 						else 
 							res.send( username + " was successfully created!" );
 					});
@@ -184,13 +184,13 @@ app.post('/game/create/', function(req, res) {
     db.User.findOne({ username : p1 }, function(err, userP1) {
 		if (userP1 == null) {
 			console.log ('Error challenging user ' + p2);
-			res.status(404).send('User ' + p1 + ' does not exist.');
+			res.status(404).send('User <u>' + p1 + '</u> does not exist.');
 		} else {
 			console.log('user found ' + userP1);
 			db.User.findOne({ username : p2 }, function(err2, userP2) {
 				if (userP2 == null) {
 					console.log ('Error challenging user ' + p2);
-					res.status(404).send('User ' + p2 + ' does not exist.');
+					res.status(404).send('User <u>' + p2 + '</u> does not exist.');
 				} else {
 					console.log('user found ' + userP2);
 					var game = new db.Game({

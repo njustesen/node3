@@ -99,8 +99,8 @@ ngapp.controller('locationController',
 
 ngapp.controller('sessionController', 
 [
-  '$scope', 'sessionFactory', 'userFactory', 
-    function ($scope, sessionFactory, userFactory) { 
+  '$scope', 'sessionFactory', 'userFactory', 'validFactory',   
+    function ($scope, sessionFactory, userFactory, validFactory) { 
       $scope.isAuthenticated = function () { 
         return sessionFactory.getSessionId() != "undefined" && sessionFactory.getSessionId() != undefined;
       };
@@ -117,8 +117,32 @@ ngapp.controller('sessionController',
         return sessionFactory.deleteSession();
       };
       $scope.createUser = function (user) { 
-        console.log("create user with email " + user.email);
+        
         return userFactory.createUser(user);
+      };
+      $scope.validEmail = function (email, id, parent, button) { 
+        console.log("validating email: " + email);
+        $scope.emailError = validFactory.validEmail(email, id);
+        console.log('changing ' + button + ' disabled to ' + !validFactory.validRegistration(parent));
+        $('#'+button).prop('disabled', !validFactory.validRegistration(parent))
+      };
+      
+      $scope.validUsername = function (username, id, parent, button) { 
+        console.log("validating username: " + username);
+        $scope.usernameError = validFactory.validUsername(username, id);
+        console.log('changing ' + button + ' disabled to ' + !validFactory.validRegistration(parent));
+        $('#'+button).prop('disabled', !validFactory.validRegistration(parent))
+      };
+
+      $scope.validPassword = function (password, id, parent, button) { 
+        console.log("validating password: " + password);
+        $scope.passwordError = validFactory.validPassword(password, id);
+        console.log('changing ' + button + ' disabled to ' + !validFactory.validRegistration(parent));
+        $('#'+button).prop('disabled', !validFactory.validRegistration(parent))
+      };
+
+      $scope.validLogin = function (username, password, button) { 
+        $('#'+button).prop('disabled', !(username != undefined && username != "" && password != undefined && password != ""));
       };
     }
 ]);

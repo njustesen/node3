@@ -152,3 +152,102 @@ angular.module('userFactory')
 
     return userFactory;
 }]);
+
+var myApp = angular.module('validFactory', []);
+
+angular.module('validFactory')
+    .factory('validFactory', [ function() {
+
+    var validFactory = {};
+
+    validFactory.validEmail = function (email, id) {
+        $('#'+id).removeClass('has-success has-error');
+        var emailError = '';
+
+        if (email.length == 0){
+          return emailError;
+        }
+        
+        var arr = email.split('@');
+        if (arr.length == 2 && arr[0].length > 0 && arr[1].length > 0){
+
+          var secondPart = arr[1].split('.');
+          if (secondPart.length > 1){
+            $.each(secondPart, function( index, value ) {
+              if (value.length == 0){
+                $('#'+id).addClass('has-error');
+                emailError = 'Not a valid email address';
+                return false;
+              }
+            });
+          } else {
+             $('#'+id).addClass('has-error');
+            emailError = 'Not a valid email address';
+          }
+
+          if (emailError != ""){
+            return emailError;
+          }
+
+          $('#'+id).addClass('has-success');
+          return emailError;        
+        }
+
+        emailError = 'Not a valid email address';
+        $('#'+id).addClass('has-error');
+        return emailError;
+    };
+
+    validFactory.validUsername = function (username, id) {
+        $('#'+id).removeClass('has-success has-error');
+        var usernameError = '';
+        
+        if (username.length == 0){
+          return usernameError;
+        }
+
+        if (username.length >= 4){
+          $('#'+id).addClass('has-success');
+          return usernameError;         
+        }
+
+        $('#'+id).addClass('has-error');
+        usernameError = 'Min. 4 characters';
+        return usernameError;
+    };
+
+    validFactory.validPassword = function (password, id) {
+        $('#'+id).removeClass('has-success has-error');
+        var passwordError = '';
+        
+        if (password.length == 0){
+          return passwordError;
+        }
+
+        if (password.length >= 8){
+          $('#'+id).addClass('has-success');
+          return passwordError;         
+        }
+
+        $('#'+id).addClass('has-error');
+        passwordError = 'Min. 8 characters';
+
+        return passwordError;
+    };
+
+    validFactory.validRegistration = function (parent) {
+        console.log('validating registration');
+        var valid = true;
+        $('#'+parent).find('.valid-error').each(function () {
+            if (!($(this).hasClass('has-success'))){
+              console.log('validation failed with ' + $(this).html());
+              valid = false;
+              return false;
+            }
+        });
+        console.log('validation :' + valid);
+        return valid;
+    };
+
+    return validFactory;
+}]);
