@@ -18,6 +18,7 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
+    <div class="cover"></div>
 
     <div ng-if="isAuthenticated()" class="navbar navbar-default navbar-fixed-top" ng-controller="locationController">
       <div class="navbar-header">
@@ -129,6 +130,12 @@
     <script type="text/javascript" src="scripts/services.js"></script>
     <script type="text/javascript" src="scripts/directives.js"></script>
     <script type="text/javascript" src="scripts/controllers.js"></script>
+
+    <script>
+      $( document ).ready(function() {
+        $('.cover').delay( 200 ).fadeOut('slow');
+      });
+    </script>
 
 </body>
 </html>

@@ -110,11 +110,15 @@ ngapp.controller('sessionController',
       $scope.getSessionUsername = function () { 
         return sessionFactory.getSessionUsername();
       };
-      $scope.createSession = function (username, password) { 
-        return sessionFactory.createSession(username, password);
+      $scope.createSession = function (user) { 
+        $('.cover').fadeIn('fast', function(){
+          sessionFactory.createSession(user.username, user.password);
+        });
+        
       };
       $scope.deleteSession = function () { 
-        return sessionFactory.deleteSession();
+        $('.cover').show();
+        sessionFactory.deleteSession();
       };
       $scope.createUser = function (user) { 
         

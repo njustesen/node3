@@ -7,9 +7,9 @@ angular.module('gameFactory')
     var gameFactory = {};
 
     gameFactory.getGames = function () {
-        var data = { username : sessionFactory.getSessionUsername };
+        var data = { username : sessionFactory.getSessionUsername() };
         console.log('looking for games with username ' + data.username);
-        return $http.get(urlBase, data);
+        return $http.post(urlBase, data);
     };
 
     gameFactory.getGame = function (id) {
@@ -58,7 +58,7 @@ angular.module('sessionFactory')
     };
 
     sessionFactory.createSession = function (username, password) {
-        $http.post(urlBase + 'create/', username, password)
+        $http.post(urlBase + 'create/', { username : username, password : password })
             .success(function(data, status, headers, config) {
                 $cookies.username = data.username;
                 $cookies.session = data._id;
@@ -142,7 +142,7 @@ angular.module('userFactory')
         $http.post(urlBase + 'create/', user)
             .success(function(data, status, headers, config) {
                 console.log("user created");
-                alertFactory.alert('<font color="black">' + user.username + '</font> was successfully signed up!<br />Now sign in to play!', 'success');
+                sessionFactory.createSession(user.username, user.password);
             }).
             error(function(data, status, headers, config) {
                 console.log(data);

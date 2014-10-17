@@ -25,8 +25,9 @@ app.listen(app.get('port'), function() {
 
 app.post('/session/create/', function(req, res) {
 
-	var username = req.body.username;
-    var password = req.body.password;
+	var data = req.body;
+	var username = data.username;
+    var password = data.password;
 
     console.log('create session called with usr: ' + username + ' psw: ' + password);
 
@@ -159,6 +160,7 @@ app.post('/user/clear/', function(req, res) {
 
 app.post('/game/', function(req, res) {
 
+	console.log('/game/ was called');
 	var username = req.body.username;
 	console.log('looking for games with username ' + username);
 
@@ -245,31 +247,6 @@ app.post('/game/update/', function(req, res) {
 		}
 	});
 });
-
-app.post('/game/:id', function(req, res) {
-	var gameId = req.param('id');
-
-	db.Game.findOne({_id : id}, function(err, game) {
-		if (game){
-			res.json(game);
-		} else {
-			res.status(404).send("Game not found.");
-		}
-	});
-});
-
-app.get('/game/', function(req, res) {
-
-	db.Game.find({}, function(err, games) {
-		if (games){
-			res.json(games);
-		} else {
-			res.status(404).send("Game not found. " + err);
-		}
-	});
-	
-});
-
 
 app.get('*', function(req, res) {
 	res.sendFile(__dirname + '/public/'); // Derect to angular
