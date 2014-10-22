@@ -1,0 +1,42 @@
+<div>
+	
+	<div class="well bs-component">
+		<div ng-show="game != 'undefined'">
+			<div class="game-opt">
+				<div class="float-left center game-info">
+					<label>Opponent</label><br/>
+					<h2>{{ getOpponent(getSessionUsername(), game) }}</h2>
+				</div>
+				<div class="float-right center game-info">
+					<label>Turn</label><br/>
+					<h2>{{ game.gamestate.turn }}</h2>
+				</div>
+			</div>
+			<hr/>
+			<div class="gamegrid">
+			  <div id="grid-0-0" class="col-grid" ng-click="gridClick(0,0)">{{ game.gamestate.grid[0][0] }}</div>
+			  <div id="grid-0-1" class="col-grid" ng-click="gridClick(0,1)">{{ game.gamestate.grid[0][1] }}</div>
+			  <div id="grid-0-2" class="col-grid" ng-click="gridClick(0,2)">{{ game.gamestate.grid[0][2] }}</div>
+
+			  <div id="grid-1-0" class="col-grid" ng-click="gridClick(1,0)">{{ game.gamestate.grid[1][0] }}</div>
+			  <div id="grid-1-1" class="col-grid" ng-click="gridClick(1,1)">{{ game.gamestate.grid[1][1] }}</div>
+			  <div id="grid-1-2" class="col-grid" ng-click="gridClick(1,2)">{{ game.gamestate.grid[1][2] }}</div>
+
+			  <div id="grid-2-0" class="col-grid" ng-click="gridClick(2,0)">{{ game.gamestate.grid[2][0] }}</div>
+			  <div id="grid-2-1" class="col-grid" ng-click="gridClick(2,1)">{{ game.gamestate.grid[2][1] }}</div>
+			  <div id="grid-2-2" class="col-grid" ng-click="gridClick(2,2)">{{ game.gamestate.grid[2][2] }}</div>
+			</div>
+			<div>
+				<hr/>
+				<div class="buttons">
+					<button class="btn btn-danger float-left"><span class="glyphicon glyphicon-exclamation-sign" /> Surrender</button>
+					<button class="btn btn-success float-right"><span class="glyphicon glyphicon-ok"/> Submit</button>
+				</div>
+			</div>
+			<div ng-show="error != ''">
+				<h1>{{ error }}</h1>
+			</div>
+		</div>
+	</div>
+
+</div>

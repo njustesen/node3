@@ -13,7 +13,7 @@ angular.module('gameFactory')
     };
 
     gameFactory.getGame = function (id) {
-        return $http.post(urlBase + '/' + id);
+        return $http.post(urlBase + id);
     };
 
     gameFactory.createGame = function (players) {
@@ -21,6 +21,7 @@ angular.module('gameFactory')
     };
 
     gameFactory.getOpponent = function (user, game){
+        console.log(game);
         if (game.p1 == user){
             return game.p2;
         }
@@ -135,6 +136,10 @@ angular.module('userFactory')
 
     userFactory.getUser = function (user) {
         return $http.post(urlBase, user);
+    };
+
+    userFactory.getUsers = function () {
+        return $http.post('/users/');
     };
 
     userFactory.createUser = function (user) {

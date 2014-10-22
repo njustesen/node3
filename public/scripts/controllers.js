@@ -3,8 +3,8 @@ var ngapp = angular.module('ngapp', []);
 
 ngapp.controller('gameController', 
 [
-	'$scope', '$http', 'gameFactory', 'sessionFactory', 'alertFactory', 
-  	function ($scope, $http, gameFactory, sessionFactory, alertFactory) {
+	'$scope', '$http', '$location', 'gameFactory', 'sessionFactory', 'alertFactory', 
+  	function ($scope, $http, $location, gameFactory, sessionFactory, alertFactory) {
     	$scope.status;
       $scope.games;
       $scope.orders;
@@ -12,15 +12,20 @@ ngapp.controller('gameController',
       getGames();
 
       function getGames() {
-          gameFactory.getGames()
-              .success(function (games) {
-                  console.log("games: " + games);
-                  $scope.games = games;
-              })
-              .error(function (error) {
-                  $scope.status = 'Unable to load game data: ' + error.message;
-              });
+        gameFactory.getGames()
+          .success(function (games) {
+            console.log("games: " + games);
+            $scope.games = games;
+          })
+          .error(function (error) {
+            $scope.status = 'Unable to load game data: ' + error.message;
+          });
       }
+
+      $scope.go = function (id) {
+        console.log(id);
+        $location.path( '/play/' + id );
+      };
 
       $scope.challenge = function (username){
         var sessionUser = sessionFactory.getSessionUsername();
@@ -68,6 +73,19 @@ ngapp.controller('gameController',
         return gameFactory.getOpponent(user, game);
       }
 
+      $scope.wonText = function (game, username) {
+        if (game.gamestate.winner === username){
+          return "Won";
+        }
+        if (game.gamestate.winner === null){
+          return "Draw";
+        }
+        if (game.gamestate.winner !== ""){
+          return "Lost";
+        }
+        return "";
+      }
+
     }
 ]);
 
@@ -79,11 +97,96 @@ ngapp.controller('aboutController',
   	}
 ]);
 
+ngapp.controller('playController', 
+[
+  '$scope', '$http', '$routeParams', 'gameFactory', 
+    function ($scope, $http, $routeParams, gameFactory) {
+
+      var id = $routeParams.id;
+
+      var action = {
+        x : -1,
+        y : -1,
+        token : ''
+      }
+      
+      gameFactory.getGame(id)
+        .success(function(data, status, headers, config) {
+          $scope.game = data;
+          if ($scope.game.gamestate.turn%2 == 0){
+            action.token = 'x';
+          } else {
+            action.token = 'o';
+          }
+          for(var x=0; x < 3; x++){
+            for(var y=0; y < 3; y++){
+              if ($scope.game.gamestate.grid[y][x] == ' '){
+                $('#grid-'+y+'-'+x).addClass('grid-click');
+              }
+            }
+          }
+        }).
+        error(function(data, status, headers, config) {
+          $scope.error = 'Cannot find game.';
+        });
+
+      $scope.isPlayersTurn = function (username) {
+        return function( item ) {
+          return item.gamestate.playerToMove === username;
+        };
+      }
+
+      $scope.gridClick = function (y, x) {
+        if ($('#grid-'+y+'-'+x).hasClass('grid-click')){
+          if ($('#grid-'+y+'-'+x).hasClass('grid-action')){
+            $('#grid-'+y+'-'+x).removeClass('grid-action');
+            $('#grid-'+y+'-'+x).html(' ');
+            action.x = -1;
+            action.y = -1;
+          } else {
+            $('.grid-action').html(' ');
+            $('.grid-action').removeClass('grid-action');
+            $('#grid-'+y+'-'+x).addClass('grid-action');
+            $('#grid-'+y+'-'+x).html(action.token);
+            action.x = -x;
+            action.y = -y;
+          }
+        }
+      }
+
+      $scope.isOpponentsTurn = function (username) {
+        return function( game ) {
+          return game.gamestate.playerToMove === gameFactory.getOpponent(username, game);
+        };
+      }
+
+      $scope.isGameOver = function (username) {
+        return function( game ) {
+          return gameFactory.isGameOver(game);
+        };
+      }
+
+      $scope.getOpponent = function (user, game) {
+        if (game !== undefined){
+          return gameFactory.getOpponent(user, game);
+        }
+      }
+    }
+]);
+
 ngapp.controller('rankingController', 
 [
-	'$scope', '$http',
-  	function ($scope, $http) {
-    	$scope.test = 'ranking-test';
+	'$scope', '$http', 'userFactory', 
+  	function ($scope, $http, userFactory) {
+    	userFactory.getUsers()
+        .success(function(data, status, headers, config) {
+          $scope.users = data;
+          console.log($scope.users.length + ' users found');
+        }).
+        error(function(data, status, headers, config) {
+            console.log(data);
+            alertFactory.alert(data, 'danger');
+        });
   	}
 ]);
 
@@ -94,6 +197,7 @@ ngapp.controller('locationController',
       $scope.isActive = function (viewLocation) { 
         return viewLocation === $location.path();
       };
+
     }
 ]);
 
@@ -111,10 +215,9 @@ ngapp.controller('sessionController',
         return sessionFactory.getSessionUsername();
       };
       $scope.createSession = function (user) { 
-        $('.cover').fadeIn('fast', function(){
+        //$('.cover').fadeIn('fast', function(){
           sessionFactory.createSession(user.username, user.password);
-        });
-        
+        //});
       };
       $scope.deleteSession = function () { 
         $('.cover').show();

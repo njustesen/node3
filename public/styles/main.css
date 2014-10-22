@@ -115,8 +115,22 @@ a:hover {
 	margin-bottom: 120px;
 }
 
+.login-pills>li>a {
+	background-color: rgba(255,255,255,0.5);
+	margin-right: 5px;
+}
+
+.login-pills>li>a:hover {
+	background-color: rgba(255,255,255,0.8);
+}
+
+.input-group {
+	box-shadow: 0px 0px 20px #000;
+}
+
 .well {
 	background-color: #fff;
+	box-shadow: 0px 0px 20px #000;
 }
 
 .login-page {
@@ -174,4 +188,68 @@ a:hover {
 	color: red;
 	font-size: 13px;
 	font-weight: bold;
+}
+
+.col-grid{
+	height: 30%;
+	width: 30%;
+	float: left;
+	margin: 4px;
+	background-color: #eee;
+	border: solid 1px;
+	border-color: #ccc;
+	font-size: 64px;
+	text-align: center;
+	vertical-align: middle;
+	text-transform: uppercase;
+}
+
+.gamegrid{
+	height: 300px;
+	max-width: 300px;
+	margin: 20px auto 20px auto;
+}
+
+.game-opt{
+	height: 52px;
+}
+
+.game-opt h2{
+	margin-top:0px;
+}
+
+.buttons{
+	height: 20px;
+}
+
+.float-right{
+	float: right;
+}
+
+.float-left{
+	float: left;
+}
+
+.center{
+	text-align: center;
+}
+
+.game-info{
+	width: 50%;
+}
+
+.grid-click:hover{
+	cursor: pointer;
+	border-color: #18bc9c;
+	background-color: #ddd ;
+}
+
+.grid-action{
+	cursor: pointer;
+	border-color: #18bc9c;
+}
+
+.grid-action:hover{
+	cursor: pointer;
+	border-color: #e74c3c
 }

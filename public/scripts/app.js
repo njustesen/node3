@@ -25,7 +25,11 @@ node3app.config(['$routeProvider',
         templateUrl: 'view/ranking.html',
         controller: 'rankingController'
       }).
+      when('/play/:id', {
+        templateUrl: 'view/play.html',
+        controller: 'playController'
+      }).
       otherwise({
-        redirectTo: '/game'
+        redirectTo: '/game/'
       });
   }]);

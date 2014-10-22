@@ -1,5 +1,22 @@
 <div>
-	<h1>Rankings</h1>
-	<p>{{test}}
-	</p>
+	<div class="well bs-component">
+
+		<table class="table table-striped table-hover no-footer dataTable">
+		  <thead>
+		  	<tr>
+		  		<th>Rank</th>
+		  		<th>Player</th>
+		  		<th>W/D/L</th>
+		  	</tr>
+		  </thead>
+		  <tbody>
+		  	<tr ng-repeat="user in users | orderBy: user.stats.won">
+		  		<td>{{ $index + 1 }}</td>
+		  		<td>{{ user.username }}</td>
+		  		<td>{{ user.stats.won }} / {{ user.stats.draw }} / {{ user.stats.lost }}</td>
+		  	</tr>
+		  </tbody>
+		</table>
+
+	</div>
 </div>

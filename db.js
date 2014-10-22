@@ -14,7 +14,12 @@ mongoose.connect(uristring, function (err, res) {
     var userSchema = new mongoose.Schema({
 		username: { type: String, index: true },
 		email: { type: String },
-	    password: { type: String }
+	    password: { type: String },
+	    stats : {
+	    	won : { type : Number },
+	    	lost : { type : Number },
+	    	draw : { type : Number }
+	    }
 	});
 
 	var sessionSchema = new mongoose.Schema({

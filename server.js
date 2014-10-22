@@ -92,6 +92,23 @@ app.post('/session/delete', function(req, res) {
 	
 });
 
+app.post('/users/', function(req, res) {
+
+	console.log('/users/ called');
+
+	db.User.find({}, function(err, users) {
+		if (users){
+			console.log(users.length + ' found.');
+			res.json(users);
+		} else {
+			console.log(error);
+			res.status(404).send('User not found');
+		}
+	});
+
+});
+
+/* TODO */
 app.post('/user/', function(req, res) {
 
 	var username = req.body.username;
@@ -112,6 +129,12 @@ app.post('/user/create/', function(req, res) {
 	var username = req.body.username;
 	var password = req.body.password;
 	var email = req.body.email;
+	var stats = 
+		{
+			won : 0,
+			lost : 0,
+			draw : 0
+		};
 
 	console.log('trying to create user with email: ' + email);
 
@@ -130,7 +153,8 @@ app.post('/user/create/', function(req, res) {
 					var user = new db.User ({
 					  username : username,
 					  password : password,
-					  email : email
+					  email : email,
+					  stats : stats
 					});
 
 					// Saving it to the database.  
@@ -171,6 +195,23 @@ app.post('/game/', function(req, res) {
 		function(err, games){
 			res.json(games);
 		});
+});
+
+app.post('/game/:id', function(req, res) {
+
+	console.log('/game/id was called');
+	var id = req.param('id');
+	console.log('/game/ was called with id: ' + id);
+	
+	db.Game.findOne({ _id : id }, function(err, game) {
+		if (game){
+			console.log("Game with id: " + id + " was found.");
+			res.json(game);
+		} else {
+			res.status(404).send('Game not found.');
+		}
+	});
+
 });
 
 app.post('/game/create/', function(req, res) {
