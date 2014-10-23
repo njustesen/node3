@@ -365,7 +365,7 @@ function update(game, action){
 	var grid = game.gamestate.grid;
 	game.gamestate.grid = grid.replaceAt(action.y * 3 + action.x, action.token);
 	game.gamestate.turn = game.gamestate.turn + 1;
-	
+
 	if (inRow(game, action.token)){
 		console.log("Game Over!");
 		if (action.token == 'x'){
@@ -381,10 +381,9 @@ function update(game, action){
 		game.winner = null;
 		game.gamestate.playerToMove = null;
 	} else if (game.gamestate.playerToMove === game.p1){
-			game.gamestate.playerToMove = game.p2;
-		} else {
-			game.gamestate.playerToMove = game.p1;
-		}
+		game.gamestate.playerToMove = game.p2;
+	} else {
+		game.gamestate.playerToMove = game.p1;
 	}
 	
 	console.log(game.gamestate.grid);
