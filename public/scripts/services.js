@@ -41,10 +41,10 @@ angular.module('gameFactory')
     }
 
     gameFactory.isGameOver = function (game){
-        if (game.winner == ""){
-            return true;
+        if (game.winner === ""){
+            return false;
         }
-        return false;
+        return true;
     }
 
     gameFactory.isADraw = function (game){
