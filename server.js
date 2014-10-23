@@ -15,6 +15,10 @@ app.use(express.static(__dirname + '/public/', {maxAge: 0}));
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 // app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
 
+String.prototype.replaceAt=function(index, character) {
+    return this.substr(0, index) + character + this.substr(index+character.length);
+}
+
 app.post('/ping', function(req, res) {
 	res.send('Hello');
 });
@@ -129,12 +133,9 @@ app.post('/user/create/', function(req, res) {
 	var username = req.body.username;
 	var password = req.body.password;
 	var email = req.body.email;
-	var stats = 
-		{
-			won : 0,
-			lost : 0,
-			draw : 0
-		};
+	var won = 0;
+	var lost = 0;
+	var draw = 0;
 
 	console.log('trying to create user with email: ' + email);
 
@@ -154,7 +155,9 @@ app.post('/user/create/', function(req, res) {
 					  username : username,
 					  password : password,
 					  email : email,
-					  stats : stats
+					  won : won,
+					  draw : draw,
+					  lost : lost
 					});
 
 					// Saving it to the database.  
@@ -182,7 +185,7 @@ app.post('/user/clear/', function(req, res) {
 	});
 });
 
-app.post('/game/', function(req, res) {
+app.post('/game/list/', function(req, res) {
 
 	console.log('/game/ was called');
 	var username = req.body.username;
@@ -197,7 +200,7 @@ app.post('/game/', function(req, res) {
 		});
 });
 
-app.post('/game/:id', function(req, res) {
+app.post('/game/get/:id', function(req, res) {
 
 	console.log('/game/id was called');
 	var id = req.param('id');
@@ -243,19 +246,15 @@ app.post('/game/create/', function(req, res) {
 						gamestate : {
 							turn : 0,
 							playerToMove : p1,
-							grid : [
-								[' ',' ',' '],
-								[' ',' ',' '],
-								[' ',' ',' ']
-							]
+							grid : "         "
 						}
 					});
 
-					game.save(function (err3) {
+					game.save(function (err3, game) {
 						if (err) 
 							res.status(404).send("Error creating the game!");
 						else 
-							res.json('Game successfully created!');
+							res.json(game._id);
 					});
 				}
 			});
@@ -264,23 +263,32 @@ app.post('/game/create/', function(req, res) {
 
 });
 
-app.post('/game/update/', function(req, res) {
-	var gameId = req.param('game');
-	var player = req.param('player');
-	var action = req.param('action');
+app.post('/game/update/:id/', function(req, res) {
 
-	db.Game.findOne({_id : gameId}, function(err, game) {
+	var player = req.body.player;
+	var action = req.body.action;
+
+	var id = req.param('id');
+
+	console.log('gameId: ' + id);
+	console.log('player: ' + player);
+	console.log('action: ' + action);
+
+	db.Game.findOne({_id : id}, function(err, game) {
 		if (game){
 			console.log("Game found.");
 			if (allowed(game, player, action)){
+				console.log("Move allowed");
 				update(game, action);
-				// TODO: Respond with json
-				game.save(function (err) {
-					if (err) 
-						res.status(404).send("Error saving game");
-					else 
-						res.send("A game was successfully created with id " + game._id );
-				});
+				console.log("Saving game");
+				game.save();
+
+				updateStats(game);
+
+				res.json(game);
+
+			} else {
+				res.status(404).send("Move not allowed!");
 			}
 		} else {
 			console.log("Game not found.");
@@ -292,3 +300,178 @@ app.post('/game/update/', function(req, res) {
 app.get('*', function(req, res) {
 	res.sendFile(__dirname + '/public/'); // Derect to angular
 });
+
+function updateStats(game){
+	var winner = game.winner;
+	var looser = '';
+	var draw = false;
+	var over = false;
+
+	if (winner == game.p1){
+		looser = game.p2;
+		over = true;
+	} else if (winner == game.p2){
+		looser = game.p1;
+		over = true;
+	} else if (winner != ''){
+		draw = true;
+	}
+	console.log('winner is ' + winner);
+	console.log('looser is ' + looser);
+
+	if (draw){
+		console.log('game is a draw');
+		db.User.findOne({ username : game.p1 }, function(err, user) {
+			if (user){
+				console.log('draw for ' + user.username);
+				user.draw = user.draw + 1;
+				user.save();
+			}
+		});
+		db.User.findOne({ username : game.p2 }, function(err, user) {
+			if (user){
+				console.log('draw for ' + user.username);
+				user.draw = user.draw + 1;
+				user.save();
+			}
+		});
+	} else if (over){
+		db.User.findOne({ username : winner }, function(err, user) {
+			if (user){
+				console.log('won for ' + user.username);
+				console.log(user.won);
+				user.won = user.won + 1;
+				console.log(user.won);
+				user.save();
+			}
+		});
+		db.User.findOne({ username : looser }, function(err, user) {
+			if (user){
+				console.log('loss for ' + user.username);
+				console.log(user.lost);
+				user.lost = user.lost + 1;
+				console.log(user.lost);
+				user.save();
+			}
+		});
+	}
+}
+
+/*******************/
+
+function update(game, action){
+	console.log('### UPDATE ###');
+	console.log(action);
+	var grid = game.gamestate.grid;
+	game.gamestate.grid = grid.replaceAt(action.y * 3 + action.x, action.token);
+	game.gamestate.turn = game.gamestate.turn + 1;
+	
+	if (inRow(game, action.token)){
+		console.log("Game Over!");
+		if (action.token == 'x'){
+			game.winner = game.p1;
+			console.log('x won!');
+		} else if (action.token == 'o'){
+			game.winner = game.p2;
+			console.log('o won!');
+		}
+		console.log(game.winner + ' won!');
+		game.gamestate.playerToMove = null;
+	} else if (game.gamestate.turn == 9){
+		game.winner = null;
+		game.gamestate.playerToMove = null;
+	} else if (game.gamestate.playerToMove === game.p1){
+			game.gamestate.playerToMove = game.p2;
+		} else {
+			game.gamestate.playerToMove = game.p1;
+		}
+	}
+	
+	console.log(game.gamestate.grid);
+	console.log('##############');
+}
+
+function allowed(game, player, action) {
+	console.log('allowed called');
+	if (game.winner === game.p1 
+			|| game.winner === game.p2 
+			|| game.winner === null){
+		console.log('game is over');
+		return false;
+	}
+	if (game.gamestate.playerToMove !== player){
+		console.log('not ' + player + 's turn');
+		return false;
+	}
+
+	if (game.p1 === player){
+		console.log('player 1 (' + game.p1 + ') found -> ' + player);
+		console.log('player 2 (' + game.p2 + ')');
+		if (action.token !== 'x'){
+			console.log('illegal token -> ' + action.token);
+			return false;
+		} else if (game.gamestate.grid.charAt(action.y*3 + action.x) != ' '){
+			console.log('illegal square');
+			return false;
+		} else {
+			console.log('action allowed');
+			return true;
+		}
+	} else if (game.p2 === player){
+		console.log('player 2 (' + game.p2 + ') found -> ' + player);
+		console.log('player 1 (' + game.p1 + ')');
+		if (action.token !== 'o'){
+			console.log('illegal token -> ' + action.token);
+			return false;
+		} else if (game.gamestate.grid.charAt(action.y*3 + action.x) != ' '){
+			console.log('illegal square');
+			return false;
+		} else {
+			console.log('action allowed');
+			return true;
+		}
+	}
+	console.log('not allowed');
+	return false;
+}
+
+
+function inRow(game, token){
+	var size = 3;
+	for(var y = 0; y < size; y++){
+		var h = 0;
+		for(var x = 0; x < size; x++){
+			if (game.gamestate.grid.charAt(y*3+x) === token.charAt(0)){
+				h++;
+			}
+		}
+		if (h === size){
+			return true;
+		}
+	}
+	for(var x = 0; x < size; x++){
+		var v = 0;
+		for(var y = 0; y < size; y++){
+			if (game.gamestate.grid.charAt(y*3+x) === token.charAt(0)){
+				v++;
+			}
+		}
+		if (v  === size){
+			return true;
+		}
+	}
+	for(var xy = 0; xy < size; xy++){
+		var positive = 0;
+		var negative = 0;
+		if (game.gamestate.grid.charAt(xy*3 + xy) === token.charAt(0)){
+			positive++;
+		}
+		if (game.gamestate.grid.charAt((size-xy-1)*3 + (size-xy-1)) === token.charAt(0)){
+			negative++;
+		}
+		if (positive  === size || positive  === size){
+			return true;
+		}
+	}
+	return false;
+}

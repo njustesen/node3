@@ -10,10 +10,10 @@
 		  	</tr>
 		  </thead>
 		  <tbody>
-		  	<tr ng-repeat="user in users | orderBy: user.stats.won">
+		  	<tr ng-repeat="user in users | orderBy: score(user)">
 		  		<td>{{ $index + 1 }}</td>
 		  		<td>{{ user.username }}</td>
-		  		<td>{{ user.stats.won }} / {{ user.stats.draw }} / {{ user.stats.lost }}</td>
+		  		<td>{{ user.won }} / {{ user.draw }} / {{ user.lost }}</td>
 		  	</tr>
 		  </tbody>
 		</table>

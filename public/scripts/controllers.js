@@ -9,6 +9,7 @@ ngapp.controller('gameController',
       $scope.games;
       $scope.orders;
 
+      alertFactory.clear();
       getGames();
 
       function getGames() {
@@ -37,17 +38,11 @@ ngapp.controller('gameController',
         gameFactory.createGame(players)
           .success(function(data, status, headers, config) {
             alertFactory.alert('<font color="purple">' + username + '</font> was successfully challenged', 'success');
-            gameFactory.getGames()
-              .success(function(data, status, headers, config) {
-                  $scope.games = data;
-              }).
-              error(function(data, status, headers, config) {
-                  console.log(data);
-              });
+            $location.path( '/play/' + data );
           }).
           error(function(data, status, headers, config) {
-              console.log(data);
-              alertFactory.alert(data, 'danger');
+            console.log(data);
+            alertFactory.alert(data, 'danger');
           });
       }
 
@@ -63,10 +58,13 @@ ngapp.controller('gameController',
         };
       }
 
-      $scope.isGameOver = function (username) {
-        return function( game ) {
-          return gameFactory.isGameOver(game);
-        };
+      $scope.isGameOver = function (game) {
+        return function (game){
+          if (game.winner == game.p1 || game.winner == game.p2){
+            return true;
+          }
+          return false;
+        }
       }
 
       $scope.getOpponent = function (user, game) {
@@ -93,16 +91,18 @@ ngapp.controller('aboutController',
 [
 	'$scope', '$http',
   	function ($scope, $http) {
+      alertFactory.clear();
     	$scope.test = 'about-test';
   	}
 ]);
 
 ngapp.controller('playController', 
 [
-  '$scope', '$http', '$routeParams', 'gameFactory', 
-    function ($scope, $http, $routeParams, gameFactory) {
+  '$scope', '$http', '$routeParams', 'sessionFactory', 'gameFactory', 'alertFactory', 
+    function ($scope, $http, $routeParams, sessionFactory, gameFactory, alertFactory) {
 
       var id = $routeParams.id;
+      alertFactory.clear();
 
       var action = {
         x : -1,
@@ -120,14 +120,14 @@ ngapp.controller('playController',
           }
           for(var x=0; x < 3; x++){
             for(var y=0; y < 3; y++){
-              if ($scope.game.gamestate.grid[y][x] == ' '){
+              if ($scope.game.gamestate.grid.charAt(y*3 + x) == ' '){
                 $('#grid-'+y+'-'+x).addClass('grid-click');
               }
             }
           }
         }).
         error(function(data, status, headers, config) {
-          $scope.error = 'Cannot find game.';
+          alertFactory.alert('These are not the games you are looking for!', 'danger');
         });
 
       $scope.isPlayersTurn = function (username) {
@@ -148,9 +148,38 @@ ngapp.controller('playController',
             $('.grid-action').removeClass('grid-action');
             $('#grid-'+y+'-'+x).addClass('grid-action');
             $('#grid-'+y+'-'+x).html(action.token);
-            action.x = -x;
-            action.y = -y;
+            action.x = x;
+            action.y = y;
           }
+        }
+      }
+
+      $scope.submitAction = function () {
+        console.log('submitAction called ');
+        if (action.x != -1 && action.y != -1 && action.token != ''){
+          gameFactory.performAction($scope.game._id, sessionFactory.getSessionUsername(), action)
+            .success(function(data, status, headers, config) {
+              if (gameFactory.isGameOver(data)){
+                console.log("Game is over");
+                console.log(data);
+                if (gameFactory.isADraw(data)){
+                  alertFactory.alert('The game ended in a draw!', 'warning');
+                } else if (data.winner === sessionFactory.getSessionUsername()){
+                  alertFactory.alert('You won the game!', 'success');
+                } else {
+                  alertFactory.alert('You lost the game!', 'danger');
+                }
+              } else {
+                alertFactory.alert("It is now the opponent's turn!", 'info');
+              }
+              $('.grid-click').removeClass('grid-click');
+            }).
+            error(function(data, status, headers, config) {
+                console.log(data);
+                alertFactory.alert(data, 'danger');
+            });
+        } else {
+          console.log(action);
         }
       }
 
@@ -176,8 +205,11 @@ ngapp.controller('playController',
 
 ngapp.controller('rankingController', 
 [
-	'$scope', '$http', 'userFactory', 
-  	function ($scope, $http, userFactory) {
+	'$scope', '$http', 'userFactory', 'alertFactory', 
+  	function ($scope, $http, userFactory, alertFactory) {
+
+      alertFactory.clear();
+
     	userFactory.getUsers()
         .success(function(data, status, headers, config) {
           $scope.users = data;
@@ -187,6 +219,13 @@ ngapp.controller('rankingController',
             console.log(data);
             alertFactory.alert(data, 'danger');
         });
+
+      $scope.score = function (user) { 
+        return function (user){
+          return -(user.won*9999999 + user.draw*2 - user.lost);
+        }
+      };
+
   	}
 ]);
 

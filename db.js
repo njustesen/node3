@@ -11,37 +11,38 @@ mongoose.connect(uristring, function (err, res) {
   } else {
     console.log ('Successfully connected to: ' + uristring);
 
-    var userSchema = new mongoose.Schema({
+    var User = new mongoose.Schema({
 		username: { type: String, index: true },
 		email: { type: String },
 	    password: { type: String },
-	    stats : {
-	    	won : { type : Number },
-	    	lost : { type : Number },
-	    	draw : { type : Number }
-	    }
+    	won : { type : Number },
+    	lost : { type : Number },
+    	draw : { type : Number }
 	});
 
-	var sessionSchema = new mongoose.Schema({
+	var Session = new mongoose.Schema({
 		username: { type: String, index: true },
 	    key: { type: String }
 	});
 
-	var gameSchema = new mongoose.Schema({
+	var Game = new mongoose.Schema({
 		p1 : { type: String },
 		p2 : { type: String },
 		winner : { type: String },
-		gamestate: { 
+		gamestate: {
 			turn : { type: Number },
 			playerToMove : { type: String },
-			grid : { type : [] }
+			grid : { type: String }
 		}
 	});
 
 	// Add to the MongoDB database
-	exports.User = mongoose.model('Users', userSchema);
-	exports.Game = mongoose.model('Games', gameSchema);
-	exports.Session = mongoose.model('Sessions', sessionSchema);
+	exports.User = mongoose.model('User', User);
+	exports.Game = mongoose.model('Game', Game);
+	exports.Session = mongoose.model('Session', Session);
+
+	console.log ('Successfully created collections');
+
   }
 });
 

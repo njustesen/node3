@@ -3,22 +3,30 @@ var myApp = angular.module('gameFactory', []);
 angular.module('gameFactory')
     .factory('gameFactory', ['$http', 'sessionFactory', function($http, sessionFactory) {
 
-    var urlBase = '/game/';
     var gameFactory = {};
 
     gameFactory.getGames = function () {
         var data = { username : sessionFactory.getSessionUsername() };
         console.log('looking for games with username ' + data.username);
-        return $http.post(urlBase, data);
+        return $http.post('/game/list/', data);
     };
 
     gameFactory.getGame = function (id) {
-        return $http.post(urlBase + id);
+        return $http.post('/game/get/' + id);
     };
 
     gameFactory.createGame = function (players) {
-        return $http.post(urlBase + 'create/', players);
+        return $http.post('/game/create/', players);
     };
+
+
+    gameFactory.performAction = function (gameId, player, action) {
+        console.log('performAction called ');
+        console.log(gameId);
+        console.log(player);
+        console.log(action);
+        return $http.post('/game/update/' + gameId, { action : action, player: player });
+    }
 
     gameFactory.getOpponent = function (user, game){
         console.log(game);
@@ -33,7 +41,14 @@ angular.module('gameFactory')
     }
 
     gameFactory.isGameOver = function (game){
-        if (game.gamestate.winner == game.p1 || game.gamestate.winner == game.p2){
+        if (game.winner == ""){
+            return true;
+        }
+        return false;
+    }
+
+    gameFactory.isADraw = function (game){
+        if (game.winner === null){
             return true;
         }
         return false;
